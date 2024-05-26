@@ -4,8 +4,10 @@
  */
 package telas;
 
-import  java.sql.Statement;
-import apoio.ConexaoBD;
+import dao.EnderecoDAO;
+import entidades.Endereco;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,14 +36,15 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         tfdDescricaoEndereco = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         tfdCepEndereco = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
 
-        setTitle("Cadastro de Endereco");
+        setTitle("Cadastro de Endereço");
 
         jButton1.setText("Fechar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -63,24 +66,37 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        jButton2.setText("Buscar endereços");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(51, 51, 51)
+                .addGap(16, 16, 16)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(91, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Listagem", jPanel1);
+        jTabbedPane1.addTab("Listar endereços", jPanel1);
 
         jLabel1.setText("CEP:");
 
@@ -96,40 +112,34 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfdDescricaoEndereco, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE))
+                        .addComponent(tfdDescricaoEndereco))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfdCepEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 1, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                    .addContainerGap(37, Short.MAX_VALUE)
-                    .addComponent(tfdCepEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(tfdCepEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(tfdDescricaoEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(182, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(16, 16, 16)
-                    .addComponent(tfdCepEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(215, Short.MAX_VALUE)))
+                .addContainerGap(179, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Manutenção", jPanel2);
+        jTabbedPane1.addTab("Adicionar endereço", jPanel2);
 
-        jButton2.setText("Salvar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnSalvarActionPerformed(evt);
             }
         });
 
@@ -142,7 +152,7 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addComponent(btnSalvar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
                     .addComponent(jTabbedPane1))
@@ -156,7 +166,7 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnSalvar))
                 .addContainerGap())
         );
 
@@ -167,25 +177,56 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         String valueCep = tfdCepEndereco.getText();
         String valueDescricao = tfdDescricaoEndereco.getText();
         
-        try {
-            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+        if(valueCep.isBlank()) {
+            JOptionPane.showMessageDialog(this, "O CEP não pode ser vazio");
+            tfdCepEndereco.requestFocus();
+            return;
+        }
+        
+        if(valueDescricao.isBlank()) {
+            JOptionPane.showMessageDialog(this, "A descrição do endereço não pode ser vazia");
+            tfdDescricaoEndereco.requestFocus();
+            return;
+        }
+        
+        Endereco endereco = new Endereco();
+        endereco.setCep(valueCep);
+        endereco.setDescricao(valueDescricao);
+        
+        EnderecoDAO enderecoDAO = new EnderecoDAO();
+        
+        if(enderecoDAO.salvar(endereco) == null) {
+            tfdCepEndereco.setText("");
+            tfdDescricaoEndereco.setText("");
             
-            String sql = "insert into endereco " + "values" + "(default, " + "'" + valueDescricao + "', " + "'" + valueCep + "');";
+            JOptionPane.showMessageDialog(this, "Endereço adicionado com sucesso");
             
-            System.err.println("Sql: " + sql);
-            
-            int retorno = st.executeUpdate(sql);
-        } catch(Exception e) {
-            System.out.println("Erro ao inserir o endereço" + e);
+            tfdCepEndereco.requestFocus();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar endereço");
+        }
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ArrayList<Endereco> enderecos = new ArrayList();
+        
+        enderecos = new EnderecoDAO().consultarTodos();
+        
+        for (int i = 0; i < enderecos.size(); i++) {
+            System.out.println("Id: " + enderecos.get(i).getId());
+            System.out.println("Cep: " + enderecos.get(i).getCep());
+            System.out.println("Descrição: " + enderecos.get(i).getDescricao());
+            System.out.println("");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSalvar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
