@@ -4,8 +4,8 @@
  */
 package telas;
 
-import dao.ClienteDAO;
-import entidades.Cliente;
+import dao.FornecedorDAO;
+import entidades.Fornecedor;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -13,14 +13,13 @@ import javax.swing.JOptionPane;
  *
  * @author Elias
  */
-public class IfrCliente extends javax.swing.JInternalFrame {
+public class IfrFornecedor extends javax.swing.JInternalFrame {
 
     /**
-     * Creates new form IfrPessoa
+     * Creates new form IfrFornecedor
      */
-    public IfrCliente() {
+    public IfrFornecedor() {
         initComponents();
-        
         addInternalFrameListener(new javax.swing.event.InternalFrameAdapter() {
             @Override
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
@@ -35,8 +34,8 @@ public class IfrCliente extends javax.swing.JInternalFrame {
     }
     
     private void carregarDados() {
-        ArrayList<Cliente> clientes = new ClienteDAO().consultarTodos();
-        TableCliente model = new TableCliente(clientes);
+        ArrayList<Fornecedor> fornecedor = new FornecedorDAO().consultarTodos();
+        TableFornecedor model = new TableFornecedor(fornecedor);
         jTable1.setModel(model);
     }
 
@@ -49,7 +48,6 @@ public class IfrCliente extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -59,18 +57,21 @@ public class IfrCliente extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        tfdNomeCliente = new javax.swing.JTextField();
-        tfdEmailCliente = new javax.swing.JTextField();
-        tfdCpfCliente = new javax.swing.JTextField();
-        tfdTelefoneCliente = new javax.swing.JTextField();
+        tfdNomeFornecedor = new javax.swing.JTextField();
+        tfdEmailFornecedor = new javax.swing.JTextField();
+        tfdCnpjFornecedor = new javax.swing.JTextField();
+        tfdTelefoneFornecedor = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
-        setTitle("Cadastro de Clientes");
-
-        jButton1.setText("Fechar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        setTitle("Cadastro de Fornecedores");
+        addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                formAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
 
@@ -91,24 +92,24 @@ public class IfrCliente extends javax.swing.JInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Listar Clientes", jPanel1);
+        jTabbedPane1.addTab("Listar fornecedores", jPanel1);
 
         jLabel1.setText("Nome:");
 
         jLabel2.setText("Email:");
 
-        jLabel3.setText("CPF:");
+        jLabel3.setText("Telefone:");
 
-        jLabel4.setText("Telefone:");
+        jLabel4.setText("CNPJ:");
 
         jButton2.setText("Salvar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -124,66 +125,71 @@ public class IfrCliente extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfdTelefoneCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel1))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfdEmailCliente, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tfdCpfCliente)
-                            .addComponent(tfdNomeCliente))))
+                            .addComponent(tfdNomeFornecedor, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                            .addComponent(tfdEmailFornecedor)
+                            .addComponent(tfdCnpjFornecedor)
+                            .addComponent(tfdTelefoneFornecedor)))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(tfdNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfdNomeFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(tfdEmailCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfdEmailFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(tfdCnpjFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(tfdCpfCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfdTelefoneFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(tfdTelefoneCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addComponent(jButton2)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Adicionar Cliente", jPanel2);
+        jTabbedPane1.addTab("Adicionar fornecedor", jPanel2);
+
+        jButton1.setText("Fechar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane1)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
-            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addContainerGap())
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         pack();
@@ -193,56 +199,60 @@ public class IfrCliente extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formAncestorAdded
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String valueNome = tfdNomeCliente.getText();
-        String valueEmail = tfdEmailCliente.getText();
-        String valueCpf = tfdCpfCliente.getText();
-        String valueTelefone = tfdTelefoneCliente.getText();
+        String valueNome = tfdNomeFornecedor.getText();
+        String valueEmail = tfdEmailFornecedor.getText();
+        String valueCnpj = tfdCnpjFornecedor.getText();
+        String valueTelefone = tfdTelefoneFornecedor.getText();
         
         if(valueNome.isBlank()) {
             JOptionPane.showMessageDialog(this, "O nome não pode ser vazio");
-            tfdNomeCliente.requestFocus();
+            tfdNomeFornecedor.requestFocus();
             return;
         }
         
         if(valueEmail.isBlank()) {
             JOptionPane.showMessageDialog(this, "A descrição do endereço de email não pode ser vazia");
-            tfdEmailCliente.requestFocus();
+            tfdEmailFornecedor.requestFocus();
             return;
         }
         
-        if(valueCpf.isBlank()) {
-            JOptionPane.showMessageDialog(this, "O CPF não pode ser vazio");
-            tfdCpfCliente.requestFocus();
+        if(valueCnpj.isBlank()) {
+            JOptionPane.showMessageDialog(this, "O CNPJ não pode ser vazio");
+            tfdCnpjFornecedor.requestFocus();
             return;
         }
         
         if(valueTelefone.isBlank()) {
             JOptionPane.showMessageDialog(this, "O telefone não pode ser vazio");
-            tfdTelefoneCliente.requestFocus();
+            tfdTelefoneFornecedor.requestFocus();
             return;
         }
         
-        Cliente cliente = new Cliente();
-        cliente.setNome(valueNome);
-        cliente.setEmail(valueEmail);
-        cliente.setCpf(valueCpf);
-        cliente.setTelefone(valueTelefone);
+        Fornecedor fornecedor = new Fornecedor();
+        fornecedor.setNome(valueNome);
+        fornecedor.setEmail(valueEmail);
+        fornecedor.setCnpj(valueCnpj);
+        fornecedor.setTelefone(valueTelefone);
         
-        ClienteDAO clienteDAO = new ClienteDAO();
+        FornecedorDAO fornecedorDAO = new FornecedorDAO();
         
-        if(clienteDAO.salvar(cliente) == null) {
-            tfdNomeCliente.setText("");
-            tfdEmailCliente.setText("");
-            tfdCpfCliente.setText("");
-            tfdTelefoneCliente.setText("");
+        if(fornecedorDAO.salvar(fornecedor) == null) {
+            tfdNomeFornecedor.setText("");
+            tfdEmailFornecedor.setText("");
+            tfdCnpjFornecedor.setText("");
+            tfdTelefoneFornecedor.setText("");
             
-            JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso");
+            JOptionPane.showMessageDialog(this, "Fornecedor adicionado com sucesso");
             
             carregarDados();
-            tfdNomeCliente.requestFocus();
+            tfdNomeFornecedor.requestFocus();
         } else {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar dados do cliente");
+            JOptionPane.showMessageDialog(this, "Erro ao salvar dados do Fornecedor");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -259,9 +269,9 @@ public class IfrCliente extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField tfdCpfCliente;
-    private javax.swing.JTextField tfdEmailCliente;
-    private javax.swing.JTextField tfdNomeCliente;
-    private javax.swing.JTextField tfdTelefoneCliente;
+    private javax.swing.JTextField tfdCnpjFornecedor;
+    private javax.swing.JTextField tfdEmailFornecedor;
+    private javax.swing.JTextField tfdNomeFornecedor;
+    private javax.swing.JTextField tfdTelefoneFornecedor;
     // End of variables declaration//GEN-END:variables
 }

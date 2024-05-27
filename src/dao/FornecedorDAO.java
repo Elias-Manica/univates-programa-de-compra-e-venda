@@ -6,7 +6,7 @@ package dao;
 
 import apoio.ConexaoBD;
 import apoio.IDAOT;
-import entidades.Cliente;
+import entidades.Fornecedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -15,14 +15,13 @@ import java.util.ArrayList;
  *
  * @author Elias
  */
-public class ClienteDAO implements IDAOT<Cliente>{
-
+public class FornecedorDAO implements IDAOT<Fornecedor> {
     @Override
-    public String salvar(Cliente o) {
+    public String salvar(Fornecedor o) {
         try {
             Statement st = ConexaoBD.getInstance().getConnection().createStatement();
             
-            String sql = "insert into cliente " + "values" + "(default, " + "'" + o.getNome()+ "', " + "'" + o.getEmail()+ "', " + "'" + o.getCpf()+ "', " + "'" + o.getTelefone()+ "');";
+            String sql = "insert into fornecedor " + "values" + "(default, " + "'" + o.getNome()+ "', " + "'" + o.getEmail()+ "', " + "'" + o.getTelefone()+ "', " + "'" + o.getCnpj()+ "');";
             
             System.err.println("Sql: " + sql);
             
@@ -30,13 +29,12 @@ public class ClienteDAO implements IDAOT<Cliente>{
             
             return null;
         } catch(Exception e) {
-            System.out.println("Erro ao inserir o cliente" + e);
+            System.out.println("Erro ao inserir o fornecedor" + e);
             return e.toString();
-        }
-    }
+        }}
 
     @Override
-    public String atualizar(Cliente o) {
+    public String atualizar(Fornecedor o) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -46,44 +44,43 @@ public class ClienteDAO implements IDAOT<Cliente>{
     }
 
     @Override
-    public ArrayList<Cliente> consultarTodos() {
-        ArrayList<Cliente> clientes = new ArrayList();
+    public ArrayList<Fornecedor> consultarTodos() {
+        ArrayList<Fornecedor> fornecedores = new ArrayList();
         
         try {
             Statement st = ConexaoBD.getInstance().getConnection().createStatement();
             
-            String sql = "SELECT * FROM cliente;";
+            String sql = "SELECT * FROM fornecedor;";
             
             System.err.println("Sql: " + sql);
             
             ResultSet retorno = st.executeQuery(sql);
             
             while(retorno.next()) {
-                Cliente cliente = new Cliente();
+                Fornecedor fornecedor = new Fornecedor();
                 
-                cliente.setId(retorno.getInt("id"));
-                cliente.setNome(retorno.getString("nome"));
-                cliente.setEmail(retorno.getString("e_mail"));
-                cliente.setCpf(retorno.getString("cpf"));
-                cliente.setTelefone(retorno.getString("telefone"));
+                fornecedor.setId(retorno.getInt("id"));
+                fornecedor.setNome(retorno.getString("nome"));
+                fornecedor.setEmail(retorno.getString("email"));
+                fornecedor.setTelefone(retorno.getString("telefone"));
+                fornecedor.setCnpj(retorno.getString("cnpj"));
                 
-                clientes.add(cliente);
+                fornecedores.add(fornecedor);
             }
         } catch(Exception e) {
-            System.out.println("Erro ao consultar os clientes" + e);
+            System.out.println("Erro ao consultar os fornecedores" + e);
         } 
         
-        return clientes;
+        return fornecedores;
     }
 
     @Override
-    public ArrayList<Cliente> consultar(String criterio) {
+    public ArrayList<Fornecedor> consultar(String criterio) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Cliente consultarId(int id) {
+    public Fornecedor consultarId(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
 }
