@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  * @author Elias
  */
 public class IfrCliente extends javax.swing.JInternalFrame {
-
+    int idCliente = 0;
     /**
      * Creates new form IfrPessoa
      */
@@ -54,6 +54,8 @@ public class IfrCliente extends javax.swing.JInternalFrame {
         tfdCpfCliente = new javax.swing.JTextField();
         tfdTelefoneCliente = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
+        buttonEditar = new javax.swing.JButton();
+        buttonExcluir = new javax.swing.JButton();
 
         setTitle("Cadastro de Clientes");
 
@@ -180,12 +182,30 @@ public class IfrCliente extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Adicionar Cliente", jPanel2);
 
+        buttonEditar.setText("Editar");
+        buttonEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonEditarActionPerformed(evt);
+            }
+        });
+
+        buttonExcluir.setText("Excluir");
+        buttonExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonExcluirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(buttonExcluir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonEditar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
             .addComponent(jTabbedPane1)
@@ -195,7 +215,10 @@ public class IfrCliente extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(buttonEditar)
+                    .addComponent(buttonExcluir))
                 .addContainerGap())
         );
 
@@ -237,6 +260,7 @@ public class IfrCliente extends javax.swing.JInternalFrame {
         }
         
         Cliente cliente = new Cliente();
+        cliente.setId(idCliente);
         cliente.setNome(valueNome);
         cliente.setEmail(valueEmail);
         cliente.setCpf(valueCpf);
@@ -244,28 +268,85 @@ public class IfrCliente extends javax.swing.JInternalFrame {
         
         ClienteDAO clienteDAO = new ClienteDAO();
         
-        if(clienteDAO.salvar(cliente) == null) {
-            tfdNomeCliente.setText("");
-            tfdEmailCliente.setText("");
-            tfdCpfCliente.setText("");
-            tfdTelefoneCliente.setText("");
-            
-            JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso");
-            
-            carregarDados();
-            tfdNomeCliente.requestFocus();
+        if(idCliente == 0) {
+            if(clienteDAO.salvar(cliente) == null) {
+                tfdNomeCliente.setText("");
+                tfdEmailCliente.setText("");
+                tfdCpfCliente.setText("");
+                tfdTelefoneCliente.setText("");
+
+                JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso");
+
+                carregarDados();
+                tfdNomeCliente.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do cliente");
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar dados do cliente");
+            if(clienteDAO.atualizar(cliente) == null) {
+                tfdNomeCliente.setText("");
+                tfdEmailCliente.setText("");
+                tfdCpfCliente.setText("");
+                tfdTelefoneCliente.setText("");
+
+                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso");
+
+                carregarDados();
+                tfdNomeCliente.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do cliente");
+            }
         }
+        
+        idCliente = 0;
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         new ClienteDAO().popularTabela(tblCidade, tfdSearch.getText());
     }//GEN-LAST:event_btnSearchActionPerformed
 
+    private void buttonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditarActionPerformed
+        String idTabela = String.valueOf(tblCidade.getValueAt(tblCidade.getSelectedRow(), 0));
+        
+        idCliente = Integer.parseInt(idTabela);
+        Cliente cliente = new ClienteDAO().consultarId(idCliente);
+        
+        if(cliente != null) {
+            jTabbedPane1.setSelectedIndex(1);
+            
+            tfdNomeCliente.setText(cliente.getNome());
+            tfdEmailCliente.setText(cliente.getEmail());
+            tfdCpfCliente.setText(cliente.getCpf());
+            tfdTelefoneCliente.setText(cliente.getTelefone());
+            
+            tfdNomeCliente.requestFocus();
+        } else {
+            JOptionPane.showMessageDialog(this, "Id do cliente não encontrado");
+        }
+    }//GEN-LAST:event_buttonEditarActionPerformed
+
+    private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
+        String idTabela = String.valueOf(tblCidade.getValueAt(tblCidade.getSelectedRow(), 0));
+        
+        idCliente = Integer.parseInt(idTabela);
+        String cliente = new ClienteDAO().excluir(idCliente);
+        
+        if(cliente == null) {
+            JOptionPane.showMessageDialog(this, "Registro excluido com sucesso");
+            
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Problemas ao excluir o registro");
+        }
+        
+        idCliente = 0;
+    }//GEN-LAST:event_buttonExcluirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton buttonEditar;
+    private javax.swing.JButton buttonExcluir;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
  * @author Elias
  */
 public class IfrEndereco extends javax.swing.JInternalFrame {
-
+    int idEndereco = 0;
     /**
      * Creates new form IfrEndereco
      */
@@ -53,6 +53,8 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         tfdCepEndereco = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
+        buttonEditar = new javax.swing.JButton();
+        buttonExcluir = new javax.swing.JButton();
 
         jButton2.setText("Buscar endereços");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -181,12 +183,30 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Adicionar endereço", jPanel2);
 
+        buttonEditar.setText("Editar");
+        buttonEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonEditarActionPerformed(evt);
+            }
+        });
+
+        buttonExcluir.setText("Excluir");
+        buttonExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonExcluirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(buttonExcluir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonEditar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
             .addComponent(jTabbedPane1)
@@ -196,7 +216,10 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(buttonEditar)
+                    .addComponent(buttonExcluir))
                 .addContainerGap())
         );
 
@@ -224,22 +247,39 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
         }
         
         Endereco endereco = new Endereco();
+        endereco.setId(idEndereco);
         endereco.setCep(valueCep);
         endereco.setDescricao(valueDescricao);
         
         EnderecoDAO enderecoDAO = new EnderecoDAO();
         
-        if(enderecoDAO.salvar(endereco) == null) {
-            tfdCepEndereco.setText("");
-            tfdDescricaoEndereco.setText("");
-            
-            JOptionPane.showMessageDialog(this, "Endereço adicionado com sucesso");
-            
-            carregarDados();
-            tfdCepEndereco.requestFocus();
+        if(idEndereco == 0) {
+            if(enderecoDAO.salvar(endereco) == null) {
+                tfdCepEndereco.setText("");
+                tfdDescricaoEndereco.setText("");
+
+                JOptionPane.showMessageDialog(this, "Endereço adicionado com sucesso");
+
+                carregarDados();
+                tfdCepEndereco.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar endereço");
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar endereço");
+            if(enderecoDAO.atualizar(endereco) == null) {
+                tfdCepEndereco.setText("");
+                tfdDescricaoEndereco.setText("");
+
+                JOptionPane.showMessageDialog(this, "Endereço atualizado com sucesso");
+
+                carregarDados();
+                tfdCepEndereco.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao atualizar endereço");
+            }
         }
+        
+        idEndereco = 0;
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -269,9 +309,46 @@ public class IfrEndereco extends javax.swing.JInternalFrame {
         new EnderecoDAO().popularTabela(tableEnderecos, textFieldFiltrar.getText());
     }//GEN-LAST:event_buttonPesquisarActionPerformed
 
+    private void buttonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditarActionPerformed
+        String idTabela = String.valueOf(tableEnderecos.getValueAt(tableEnderecos.getSelectedRow(), 0));
+        
+        idEndereco = Integer.parseInt(idTabela);
+        Endereco endereco = new EnderecoDAO().consultarId(idEndereco);
+        
+        if(endereco != null) {
+            jTabbedPane1.setSelectedIndex(1);
+            
+            tfdCepEndereco.setText(endereco.getCep());
+            tfdDescricaoEndereco.setText(endereco.getDescricao());
+            
+            tfdCepEndereco.requestFocus();
+        } else {
+            JOptionPane.showMessageDialog(this, "Id do endereço não encontrado");
+        }
+    }//GEN-LAST:event_buttonEditarActionPerformed
+
+    private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
+        String idTabela = String.valueOf(tableEnderecos.getValueAt(tableEnderecos.getSelectedRow(), 0));
+        
+        idEndereco = Integer.parseInt(idTabela);
+        String endereco = new EnderecoDAO().excluir(idEndereco);
+        
+        if(endereco == null) {
+            JOptionPane.showMessageDialog(this, "Registro excluido com sucesso");
+            
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Problemas ao excluir o registro");
+        }
+        
+        idEndereco = 0;
+    }//GEN-LAST:event_buttonExcluirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JButton buttonEditar;
+    private javax.swing.JButton buttonExcluir;
     private javax.swing.JButton buttonPesquisar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

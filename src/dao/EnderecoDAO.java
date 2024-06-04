@@ -40,12 +40,38 @@ public class EnderecoDAO implements IDAOT<Endereco> {
 
     @Override
     public String atualizar(Endereco o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            
+            String sql = "update endereco set cep='" + o.getCep() + "', descricao='" + o.getDescricao()+ "' where id='"+ o.getId() + "'";
+            
+            System.err.println("Sql: " + sql);
+            
+            int retorno = st.executeUpdate(sql);
+            
+            return null;
+        } catch(Exception e) {
+            System.out.println("Erro ao atualizar o endereço" + e);
+            return e.toString();
+        }
     }
 
     @Override
     public String excluir(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            
+            String sql = "delete from endereco where id='"+ id + "'";
+            
+            System.err.println("Sql: " + sql);
+            
+            int retorno = st.executeUpdate(sql);
+            
+            return null;
+        } catch(Exception e) {
+            System.out.println("Erro ao atualizar o endereço" + e);
+            return e.toString();
+        }
     }
 
     @Override
@@ -84,7 +110,28 @@ public class EnderecoDAO implements IDAOT<Endereco> {
 
     @Override
     public Endereco consultarId(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Endereco endereco = null;
+        try {
+            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            
+            String sql = "SELECT * FROM endereco WHERE id = " + id;
+            
+            System.err.println("Sql: " + sql);
+            
+            ResultSet retorno = st.executeQuery(sql);
+            
+            while(retorno.next()) {
+                endereco = new Endereco();
+                
+                endereco.setId(retorno.getInt("id"));
+                endereco.setCep(retorno.getString("cep"));
+                endereco.setDescricao(retorno.getString("descricao"));             
+            }
+        } catch(Exception e) {
+            System.out.println("Erro ao consultar o endereço" + e);
+        }
+        
+        return endereco;
     }
     
     public void popularTabela(JTable tabela, String criterio) {
@@ -124,7 +171,7 @@ public class EnderecoDAO implements IDAOT<Endereco> {
                     + "SELECT * "
                     + "FROM endereco "
                     + "WHERE "
-                    + "descricao ILIKE '%" + criterio + "%'");
+                    + "descricao ILIKE '%" + criterio + "%' ORDER BY id");
 
             while (resultadoQ.next()) {
 

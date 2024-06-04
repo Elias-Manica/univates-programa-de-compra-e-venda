@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  * @author Elias
  */
 public class IfrFornecedor extends javax.swing.JInternalFrame {
-
+    int idFornecedor = 0;
     /**
      * Creates new form IfrFornecedor
      */
@@ -53,6 +53,8 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
         tfdTelefoneFornecedor = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        buttonEditar = new javax.swing.JButton();
+        buttonExcluir = new javax.swing.JButton();
 
         setTitle("Cadastro de Fornecedores");
         addAncestorListener(new javax.swing.event.AncestorListener() {
@@ -186,6 +188,20 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
             }
         });
 
+        buttonEditar.setText("Editar");
+        buttonEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonEditarActionPerformed(evt);
+            }
+        });
+
+        buttonExcluir.setText("Excluir");
+        buttonExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonExcluirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -193,6 +209,10 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
             .addComponent(jTabbedPane1)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(buttonExcluir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonEditar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -201,7 +221,10 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(buttonEditar)
+                    .addComponent(buttonExcluir))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -247,6 +270,7 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
         }
         
         Fornecedor fornecedor = new Fornecedor();
+        fornecedor.setId(idFornecedor);
         fornecedor.setNome(valueNome);
         fornecedor.setEmail(valueEmail);
         fornecedor.setCnpj(valueCnpj);
@@ -254,27 +278,82 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
         
         FornecedorDAO fornecedorDAO = new FornecedorDAO();
         
-        if(fornecedorDAO.salvar(fornecedor) == null) {
-            tfdNomeFornecedor.setText("");
-            tfdEmailFornecedor.setText("");
-            tfdCnpjFornecedor.setText("");
-            tfdTelefoneFornecedor.setText("");
-            
-            JOptionPane.showMessageDialog(this, "Fornecedor adicionado com sucesso");
-            
-            carregarDados();
-            tfdNomeFornecedor.requestFocus();
+        if(idFornecedor == 0) {
+            if(fornecedorDAO.salvar(fornecedor) == null) {
+                tfdNomeFornecedor.setText("");
+                tfdEmailFornecedor.setText("");
+                tfdCnpjFornecedor.setText("");
+                tfdTelefoneFornecedor.setText("");
+
+                JOptionPane.showMessageDialog(this, "Fornecedor adicionado com sucesso");
+
+                carregarDados();
+                tfdNomeFornecedor.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do Fornecedor");
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar dados do Fornecedor");
+            if(fornecedorDAO.atualizar(fornecedor) == null) {
+                tfdNomeFornecedor.setText("");
+                tfdEmailFornecedor.setText("");
+                tfdCnpjFornecedor.setText("");
+                tfdTelefoneFornecedor.setText("");
+
+                JOptionPane.showMessageDialog(this, "Fornecedor atualizado com sucesso");
+
+                carregarDados();
+                tfdNomeFornecedor.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao atualizado dados do Fornecedor");
+            }
         }
+        idFornecedor = 0;
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void buttonPesquisarFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPesquisarFornecedorActionPerformed
         new FornecedorDAO().popularTabela(tabelaFornecedor, fieldSearchFornecedor.getText());
     }//GEN-LAST:event_buttonPesquisarFornecedorActionPerformed
 
+    private void buttonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditarActionPerformed
+        String idTabela = String.valueOf(tabelaFornecedor.getValueAt(tabelaFornecedor.getSelectedRow(), 0));
+        
+        idFornecedor = Integer.parseInt(idTabela);
+        Fornecedor fornecedor = new FornecedorDAO().consultarId(idFornecedor);
+        
+        if(fornecedor != null) {
+            jTabbedPane1.setSelectedIndex(1);
+            
+            tfdNomeFornecedor.setText(fornecedor.getNome());
+            tfdEmailFornecedor.setText(fornecedor.getEmail());
+            tfdCnpjFornecedor.setText(fornecedor.getCnpj());
+            tfdTelefoneFornecedor.setText(fornecedor.getTelefone());
+            
+            tfdNomeFornecedor.requestFocus();
+        } else {
+            JOptionPane.showMessageDialog(this, "Id do fornecedor não encontrado");
+        }
+    }//GEN-LAST:event_buttonEditarActionPerformed
+
+    private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
+        String idTabela = String.valueOf(tabelaFornecedor.getValueAt(tabelaFornecedor.getSelectedRow(), 0));
+        
+        idFornecedor = Integer.parseInt(idTabela);
+        String fornecedor = new FornecedorDAO().excluir(idFornecedor);
+        if(fornecedor == null) {
+            JOptionPane.showMessageDialog(this, "Registro excluido com sucesso");
+            
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Problemas ao excluir o registro");
+        }
+        
+        idFornecedor = 0;
+    }//GEN-LAST:event_buttonExcluirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonEditar;
+    private javax.swing.JButton buttonExcluir;
     private javax.swing.JButton buttonPesquisarFornecedor;
     private javax.swing.JTextField fieldSearchFornecedor;
     private javax.swing.JButton jButton1;

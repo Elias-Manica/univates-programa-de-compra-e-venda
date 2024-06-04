@@ -40,12 +40,38 @@ public class ClienteDAO implements IDAOT<Cliente>{
 
     @Override
     public String atualizar(Cliente o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            
+            String sql = "update cliente set nome='"+ o.getNome() + "', e_mail='"+ o.getEmail()+ "', cpf='"+ o.getCpf()+ "', telefone='"+ o.getTelefone()+ "' where id='"+ o.getId() + "'";
+            
+            System.err.println("Sql: " + sql);
+            
+            int retorno = st.executeUpdate(sql);
+            
+            return null;
+        } catch(Exception e) {
+            System.out.println("Erro ao atualizar o cliente" + e);
+            return e.toString();
+        }
     }
 
     @Override
     public String excluir(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            
+            String sql = "delete from cliente where id='"+ id + "'";
+            
+            System.err.println("Sql: " + sql);
+            
+            int retorno = st.executeUpdate(sql);
+            
+            return null;
+        } catch(Exception e) {
+            System.out.println("Erro ao excluir o cliente" + e);
+            return e.toString();
+        }
     }
 
     @Override
@@ -86,7 +112,29 @@ public class ClienteDAO implements IDAOT<Cliente>{
 
     @Override
     public Cliente consultarId(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Cliente cliente = null;
+        try {
+            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            
+            String sql = "SELECT * FROM cliente WHERE id = " + id;
+            
+            System.err.println("Sql: " + sql);
+            
+            ResultSet retorno = st.executeQuery(sql);
+            
+            while(retorno.next()) {
+                cliente = new Cliente();
+                
+                cliente.setId(retorno.getInt("id"));
+                cliente.setNome(retorno.getString("nome"));
+                cliente.setEmail(retorno.getString("e_mail"));
+                cliente.setCpf(retorno.getString("cpf"));
+                cliente.setTelefone(retorno.getString("telefone"));           
+            }
+        } catch(Exception e) {
+            System.out.println("Erro ao consultar o cliente" + e);
+        } 
+        return cliente;
     }
     
     public void popularTabela(JTable tabela, String criterio) {
@@ -128,7 +176,7 @@ public class ClienteDAO implements IDAOT<Cliente>{
                     + "SELECT * "
                     + "FROM cliente "
                     + "WHERE "
-                    + "nome ILIKE '%" + criterio + "%'");
+                    + "nome ILIKE '%" + criterio + "%' ORDER BY id");
 
             while (resultadoQ.next()) {
 
