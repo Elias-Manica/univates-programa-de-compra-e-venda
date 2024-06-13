@@ -329,8 +329,8 @@ public class IfrPedido extends javax.swing.JInternalFrame {
             String dataBancoDeDadosFormated = Formatacao.formatarData(pedido.getData());
             
             formattedDataInput.setText(dataBancoDeDadosFormated);
-            tfdObsevacaoPedido.setText(pedido.getEndereco_entrega());
-            tfdEnderecoPedido.setText(pedido.getObservacao());
+            tfdEnderecoPedido.setText(pedido.getEndereco_entrega());
+            tfdObsevacaoPedido.setText(pedido.getObservacao());
             ComboItem item = new ComboItem();
             item.setCodigo(pedido.getClient_id());
             new CombosDAO().definirItemCombo(comboBoxClientes, item);

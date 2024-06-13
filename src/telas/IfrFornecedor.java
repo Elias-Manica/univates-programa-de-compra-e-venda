@@ -4,8 +4,11 @@
  */
 package telas;
 
+import apoio.Formatacao;
+import apoio.Validacao;
 import dao.FornecedorDAO;
 import entidades.Fornecedor;
+import java.awt.Color;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,6 +22,10 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
      */
     public IfrFornecedor() {
         initComponents();
+        
+        Formatacao.formatarCnpj(formattedCnpj);
+        Formatacao.formatarTelefone(formattedTelefone);
+        
         carregarDados();
     }
     
@@ -49,9 +56,9 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         tfdNomeFornecedor = new javax.swing.JTextField();
         tfdEmailFornecedor = new javax.swing.JTextField();
-        tfdCnpjFornecedor = new javax.swing.JTextField();
-        tfdTelefoneFornecedor = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
+        formattedCnpj = new javax.swing.JFormattedTextField();
+        formattedTelefone = new javax.swing.JFormattedTextField();
         jButton1 = new javax.swing.JButton();
         buttonEditar = new javax.swing.JButton();
         buttonExcluir = new javax.swing.JButton();
@@ -133,6 +140,18 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
             }
         });
 
+        formattedCnpj.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                formattedCnpjFocusLost(evt);
+            }
+        });
+
+        formattedTelefone.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                formattedTelefoneFocusLost(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -143,16 +162,18 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel3)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1))
-                        .addGap(18, 18, 18)
+                        .addGap(30, 30, 30)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tfdNomeFornecedor, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
                             .addComponent(tfdEmailFornecedor)
-                            .addComponent(tfdCnpjFornecedor)
-                            .addComponent(tfdTelefoneFornecedor)))
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(formattedCnpj)))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(formattedTelefone)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -169,14 +190,14 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
                 .addGap(6, 6, 6)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(tfdCnpjFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(formattedCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(tfdTelefoneFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(formattedTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(57, 57, 57)
                 .addComponent(jButton2)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Adicionar fornecedor", jPanel2);
@@ -242,8 +263,8 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         String valueNome = tfdNomeFornecedor.getText();
         String valueEmail = tfdEmailFornecedor.getText();
-        String valueCnpj = tfdCnpjFornecedor.getText();
-        String valueTelefone = tfdTelefoneFornecedor.getText();
+        String valueCnpj = formattedCnpj.getText();
+        String valueTelefone = formattedTelefone.getText();
         
         if(valueNome.isBlank()) {
             JOptionPane.showMessageDialog(this, "O nome não pode ser vazio");
@@ -259,13 +280,13 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
         
         if(valueCnpj.isBlank()) {
             JOptionPane.showMessageDialog(this, "O CNPJ não pode ser vazio");
-            tfdCnpjFornecedor.requestFocus();
+            formattedCnpj.requestFocus();
             return;
         }
         
         if(valueTelefone.isBlank()) {
             JOptionPane.showMessageDialog(this, "O telefone não pode ser vazio");
-            tfdTelefoneFornecedor.requestFocus();
+            formattedTelefone.requestFocus();
             return;
         }
         
@@ -282,8 +303,8 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
             if(fornecedorDAO.salvar(fornecedor) == null) {
                 tfdNomeFornecedor.setText("");
                 tfdEmailFornecedor.setText("");
-                tfdCnpjFornecedor.setText("");
-                tfdTelefoneFornecedor.setText("");
+                formattedCnpj.setText("");
+                formattedTelefone.setText("");
 
                 JOptionPane.showMessageDialog(this, "Fornecedor adicionado com sucesso");
 
@@ -296,8 +317,8 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
             if(fornecedorDAO.atualizar(fornecedor) == null) {
                 tfdNomeFornecedor.setText("");
                 tfdEmailFornecedor.setText("");
-                tfdCnpjFornecedor.setText("");
-                tfdTelefoneFornecedor.setText("");
+                formattedCnpj.setText("");
+                formattedTelefone.setText("");
 
                 JOptionPane.showMessageDialog(this, "Fornecedor atualizado com sucesso");
 
@@ -325,8 +346,8 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
             
             tfdNomeFornecedor.setText(fornecedor.getNome());
             tfdEmailFornecedor.setText(fornecedor.getEmail());
-            tfdCnpjFornecedor.setText(fornecedor.getCnpj());
-            tfdTelefoneFornecedor.setText(fornecedor.getTelefone());
+            formattedCnpj.setText(fornecedor.getCnpj());
+            formattedTelefone.setText(fornecedor.getTelefone());
             
             tfdNomeFornecedor.requestFocus();
         } else {
@@ -350,12 +371,30 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
         idFornecedor = 0;
     }//GEN-LAST:event_buttonExcluirActionPerformed
 
+    private void formattedCnpjFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formattedCnpjFocusLost
+        if(!Validacao.validarCNPJ(Formatacao.removerFormatacao(formattedCnpj.getText()))) {
+            formattedCnpj.setBackground(Color.red);
+        } else {
+            formattedCnpj.setBackground(Color.WHITE);
+        }
+    }//GEN-LAST:event_formattedCnpjFocusLost
+
+    private void formattedTelefoneFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formattedTelefoneFocusLost
+         if(!Validacao.validarTelefone(formattedTelefone)) {
+            formattedTelefone.setBackground(Color.red);
+        } else {
+            formattedTelefone.setBackground(Color.WHITE);
+        }
+    }//GEN-LAST:event_formattedTelefoneFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonEditar;
     private javax.swing.JButton buttonExcluir;
     private javax.swing.JButton buttonPesquisarFornecedor;
     private javax.swing.JTextField fieldSearchFornecedor;
+    private javax.swing.JFormattedTextField formattedCnpj;
+    private javax.swing.JFormattedTextField formattedTelefone;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -368,9 +407,7 @@ public class IfrFornecedor extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable tabelaFornecedor;
-    private javax.swing.JTextField tfdCnpjFornecedor;
     private javax.swing.JTextField tfdEmailFornecedor;
     private javax.swing.JTextField tfdNomeFornecedor;
-    private javax.swing.JTextField tfdTelefoneFornecedor;
     // End of variables declaration//GEN-END:variables
 }
