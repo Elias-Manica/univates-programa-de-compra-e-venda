@@ -4,11 +4,12 @@
  */
 package telas;
 
+import apoio.ComboItem;
 import apoio.CombosDAO;
 import apoio.Formatacao;
 import apoio.Validacao;
-import dao.ClienteDAO;
-import entidades.Cliente;
+import dao.PedidoDAO;
+import entidades.Pedido;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 
@@ -16,22 +17,22 @@ import javax.swing.JOptionPane;
  *
  * @author Elias
  */
-public class IfrCliente extends javax.swing.JInternalFrame {
-    int idCliente = 0;
+public class IfrPedido extends javax.swing.JInternalFrame {
+    int idPedido = 0;
     /**
      * Creates new form IfrPessoa
      */
-    public IfrCliente() {
+    public IfrPedido() {
         initComponents();
         
-        Formatacao.formatarCpf(jFormattedTextCPF);
-        Formatacao.formatarTelefone(textFieldFormatedTelefone);
+        Formatacao.formatarData(formattedDataInput);
         
+        new CombosDAO().popularCombo("cliente", comboBoxClientes);
         carregarDados();
     }
     
     private void carregarDados() {
-        new ClienteDAO().popularTabela(tblCidade, "");
+        new PedidoDAO().popularTabela(tblPedido, "");
     }
 
     /**
@@ -47,24 +48,24 @@ public class IfrCliente extends javax.swing.JInternalFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblCidade = new javax.swing.JTable();
+        tblPedido = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         tfdSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        tfdNomeCliente = new javax.swing.JTextField();
-        tfdEmailCliente = new javax.swing.JTextField();
+        tfdObsevacaoPedido = new javax.swing.JTextField();
+        tfdEnderecoPedido = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
-        jFormattedTextCPF = new javax.swing.JFormattedTextField();
-        textFieldFormatedTelefone = new javax.swing.JFormattedTextField();
+        jLabel6 = new javax.swing.JLabel();
+        formattedDataInput = new javax.swing.JFormattedTextField();
+        comboBoxClientes = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
         buttonEditar = new javax.swing.JButton();
         buttonExcluir = new javax.swing.JButton();
 
-        setTitle("Cadastro de Clientes");
+        setTitle("Cadastro de Pedidos");
 
         jButton1.setText("Fechar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -73,7 +74,7 @@ public class IfrCliente extends javax.swing.JInternalFrame {
             }
         });
 
-        tblCidade.setModel(new javax.swing.table.DefaultTableModel(
+        tblPedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -84,7 +85,7 @@ public class IfrCliente extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tblCidade);
+        jScrollPane1.setViewportView(tblPedido);
 
         jLabel5.setText("Filtrar:");
 
@@ -122,15 +123,11 @@ public class IfrCliente extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Listar Clientes", jPanel1);
+        jTabbedPane1.addTab("Listar Pedidos", jPanel1);
 
-        jLabel1.setText("Nome:");
+        jLabel1.setText("Observação:");
 
-        jLabel2.setText("Email:");
-
-        jLabel3.setText("CPF:");
-
-        jLabel4.setText("Telefone:");
+        jLabel2.setText("Endereço:");
 
         jButton2.setText("Salvar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -139,20 +136,17 @@ public class IfrCliente extends javax.swing.JInternalFrame {
             }
         });
 
-        jFormattedTextCPF.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jFormattedTextCPFFocusGained(evt);
-            }
+        jLabel6.setText("Data:");
+
+        formattedDataInput.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
-                jFormattedTextCPFFocusLost(evt);
+                formattedDataInputFocusLost(evt);
             }
         });
 
-        textFieldFormatedTelefone.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                textFieldFormatedTelefoneFocusLost(evt);
-            }
-        });
+        comboBoxClientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel3.setText("Cliente ID:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -164,50 +158,47 @@ public class IfrCliente extends javax.swing.JInternalFrame {
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel6))
+                        .addGap(31, 31, 31)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfdEmailCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
-                            .addComponent(tfdNomeCliente)))
+                            .addComponent(tfdEnderecoPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                            .addComponent(formattedDataInput)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(30, 30, 30))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textFieldFormatedTelefone)
-                            .addComponent(jFormattedTextCPF))))
+                            .addComponent(comboBoxClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(tfdObsevacaoPedido))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addGap(15, 15, 15)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(tfdNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6)
+                    .addComponent(formattedDataInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(tfdEmailCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jFormattedTextCPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfdEnderecoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textFieldFormatedTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel1)
+                    .addComponent(tfdObsevacaoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboBoxClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(27, 27, 27)
                 .addComponent(jButton2)
-                .addContainerGap(158, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Adicionar Cliente", jPanel2);
+        jTabbedPane1.addTab("Adicionar Pedido", jPanel2);
 
         buttonEditar.setText("Editar");
         buttonEditar.addActionListener(new java.awt.event.ActionListener() {
@@ -257,108 +248,109 @@ public class IfrCliente extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String valueNome = tfdNomeCliente.getText();
-        String valueEmail = tfdEmailCliente.getText();
-        String valueCpf = jFormattedTextCPF.getText();
-        String valueTelefone = textFieldFormatedTelefone.getText();
+        String valueObservacao  = tfdObsevacaoPedido.getText();
+        String valueEnderecoEntrega  = tfdEnderecoPedido.getText();
+        String valueData = formattedDataInput.getText();
         
-        if(valueNome.isBlank()) {
-            JOptionPane.showMessageDialog(this, "O nome não pode ser vazio");
-            tfdNomeCliente.requestFocus();
+        if(valueData.isBlank()) {
+            JOptionPane.showMessageDialog(this, "A data não pode ser vazia");
+            formattedDataInput.requestFocus();
             return;
         }
         
-        if(valueEmail.isBlank()) {
-            JOptionPane.showMessageDialog(this, "A descrição do endereço de email não pode ser vazia");
-            tfdEmailCliente.requestFocus();
+        if(valueEnderecoEntrega.isBlank()) {
+            JOptionPane.showMessageDialog(this, "O endereço de entrega não pode ser vazio");
+            tfdEnderecoPedido.requestFocus();
             return;
         }
         
-        if(valueCpf.isBlank()) {
-            JOptionPane.showMessageDialog(this, "O CPF não pode ser vazio");
-            jFormattedTextCPF.requestFocus();
+        if(valueObservacao.isBlank()) {
+            JOptionPane.showMessageDialog(this, "A observação não pode ser vazia");
+            tfdObsevacaoPedido.requestFocus();
             return;
         }
         
-        if(valueTelefone.isBlank()) {
-            JOptionPane.showMessageDialog(this, "O telefone não pode ser vazio");
-            textFieldFormatedTelefone.requestFocus();
-            return;
-        }
+        Pedido pedido = new Pedido();
+        pedido.setId(idPedido);
+        pedido.setData(valueData);
+        pedido.setEndereco_entrega(valueEnderecoEntrega);
+        pedido.setObservacao(valueObservacao);
+        ComboItem ci = (ComboItem) comboBoxClientes.getSelectedItem();
+        pedido.setClient_id(ci.getCodigo());
         
-        Cliente cliente = new Cliente();
-        cliente.setId(idCliente);
-        cliente.setNome(valueNome);
-        cliente.setEmail(valueEmail);
-        cliente.setCpf(valueCpf);
-        cliente.setTelefone(valueTelefone);
+        PedidoDAO pedidoDAO = new PedidoDAO();
         
-        ClienteDAO clienteDAO = new ClienteDAO();
-        
-        if(idCliente == 0) {
-            if(clienteDAO.salvar(cliente) == null) {
-                tfdNomeCliente.setText("");
-                tfdEmailCliente.setText("");
-                jFormattedTextCPF.setText("");
-                textFieldFormatedTelefone.setText("");
+        if(idPedido == 0) {
+            if(pedidoDAO.salvar(pedido) == null) {
+                formattedDataInput.setText("");
+                tfdEnderecoPedido.setText("");
+                tfdObsevacaoPedido.setText("");
+                comboBoxClientes.setSelectedIndex(0);
 
-                JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso");
+                JOptionPane.showMessageDialog(this, "Pedido adicionado com sucesso");
 
                 carregarDados();
-                tfdNomeCliente.requestFocus();
+                formattedDataInput.requestFocus();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do cliente");
+                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do pedido");
             }
         } else {
-            if(clienteDAO.atualizar(cliente) == null) {
-                tfdNomeCliente.setText("");
-                tfdEmailCliente.setText("");
-                jFormattedTextCPF.setText("");
-                textFieldFormatedTelefone.setText("");
+            if(pedidoDAO.atualizar(pedido) == null) {
+                formattedDataInput.setText("");
+                tfdObsevacaoPedido.setText("");
+                tfdEnderecoPedido.setText("");
+                comboBoxClientes.setSelectedIndex(0);
 
-                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso");
+                JOptionPane.showMessageDialog(this, "Pedido atualizado com sucesso");
 
                 carregarDados();
-                tfdNomeCliente.requestFocus();
+                formattedDataInput.requestFocus();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do cliente");
+                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do pedido");
             }
         }
         
-        idCliente = 0;
+        idPedido = 0;
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        new ClienteDAO().popularTabela(tblCidade, tfdSearch.getText());
+        new PedidoDAO().popularTabela(tblPedido, tfdSearch.getText());
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void buttonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditarActionPerformed
-        String idTabela = String.valueOf(tblCidade.getValueAt(tblCidade.getSelectedRow(), 0));
+        String idTabela = String.valueOf(tblPedido.getValueAt(tblPedido.getSelectedRow(), 0));
         
-        idCliente = Integer.parseInt(idTabela);
-        Cliente cliente = new ClienteDAO().consultarId(idCliente);
+        idPedido = Integer.parseInt(idTabela);
+        Pedido pedido = new PedidoDAO().consultarId(idPedido);
         
-        if(cliente != null) {
+        if(pedido != null) {
             jTabbedPane1.setSelectedIndex(1);
             
-            tfdNomeCliente.setText(cliente.getNome());
-            tfdEmailCliente.setText(cliente.getEmail());
-            jFormattedTextCPF.setText(cliente.getCpf());
-            textFieldFormatedTelefone.setText(cliente.getTelefone());
+            String dataBancoDeDadosFormated = Formatacao.formatarData(pedido.getData());
             
-            tfdNomeCliente.requestFocus();
+            formattedDataInput.setText(dataBancoDeDadosFormated);
+            tfdObsevacaoPedido.setText(pedido.getEndereco_entrega());
+            tfdEnderecoPedido.setText(pedido.getObservacao());
+            ComboItem item = new ComboItem();
+            item.setCodigo(pedido.getClient_id());
+            new CombosDAO().definirItemCombo(comboBoxClientes, item);
+            
+            
+            formattedDataInput.requestFocus();
         } else {
-            JOptionPane.showMessageDialog(this, "Id do cliente não encontrado");
+            JOptionPane.showMessageDialog(this, "Id do pedido não encontrado");
         }
     }//GEN-LAST:event_buttonEditarActionPerformed
 
+    
+    
     private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
-        String idTabela = String.valueOf(tblCidade.getValueAt(tblCidade.getSelectedRow(), 0));
+        String idTabela = String.valueOf(tblPedido.getValueAt(tblPedido.getSelectedRow(), 0));
         
-        idCliente = Integer.parseInt(idTabela);
-        String cliente = new ClienteDAO().excluir(idCliente);
+        idPedido = Integer.parseInt(idTabela);
+        String pedido = new PedidoDAO().excluir(idPedido);
         
-        if(cliente == null) {
+        if(pedido == null) {
             JOptionPane.showMessageDialog(this, "Registro excluido com sucesso");
             
             carregarDados();
@@ -366,50 +358,38 @@ public class IfrCliente extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Problemas ao excluir o registro");
         }
         
-        idCliente = 0;
+        idPedido = 0;
     }//GEN-LAST:event_buttonExcluirActionPerformed
 
-    private void jFormattedTextCPFFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jFormattedTextCPFFocusGained
-
-    }//GEN-LAST:event_jFormattedTextCPFFocusGained
-
-    private void jFormattedTextCPFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jFormattedTextCPFFocusLost
-        if(!Validacao.validarCPF(Formatacao.removerFormatacao(jFormattedTextCPF.getText()))) {
-            jFormattedTextCPF.setBackground(Color.red);
+    private void formattedDataInputFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formattedDataInputFocusLost
+        if(!Validacao.validarDataFormatada(formattedDataInput.getText())) {
+            formattedDataInput.setBackground(Color.red);
         } else {
-            jFormattedTextCPF.setBackground(Color.WHITE);
+            formattedDataInput.setBackground(Color.WHITE);
         }
-    }//GEN-LAST:event_jFormattedTextCPFFocusLost
-
-    private void textFieldFormatedTelefoneFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldFormatedTelefoneFocusLost
-        if(!Validacao.validarTelefone(textFieldFormatedTelefone)) {
-            textFieldFormatedTelefone.setBackground(Color.red);
-        } else {
-            textFieldFormatedTelefone.setBackground(Color.WHITE);
-        }
-    }//GEN-LAST:event_textFieldFormatedTelefoneFocusLost
+    }//GEN-LAST:event_formattedDataInputFocusLost
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton buttonEditar;
     private javax.swing.JButton buttonExcluir;
+    private javax.swing.JComboBox<String> comboBoxClientes;
+    private javax.swing.JFormattedTextField formattedDataInput;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JFormattedTextField jFormattedTextCPF;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable tblCidade;
-    private javax.swing.JFormattedTextField textFieldFormatedTelefone;
-    private javax.swing.JTextField tfdEmailCliente;
-    private javax.swing.JTextField tfdNomeCliente;
+    private javax.swing.JTable tblPedido;
+    private javax.swing.JTextField tfdEnderecoPedido;
+    private javax.swing.JTextField tfdObsevacaoPedido;
     private javax.swing.JTextField tfdSearch;
     // End of variables declaration//GEN-END:variables
 }
