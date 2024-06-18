@@ -76,3 +76,13 @@ CREATE TABLE item_pedido (
     FOREIGN KEY (produto_id) REFERENCES produto(id),
     FOREIGN KEY (pedido_id) REFERENCES pedido(id)
 );
+
+CREATE TABLE usuario ( 
+    id SERIAL PRIMARY KEY, 
+    nome VARCHAR(150) NOT NULL, 
+    e_mail VARCHAR(100) NOT NULL, 
+    senha VARCHAR(100) NOT NULL, 
+    situacao VARCHAR(1) NOT NULL 
+);
+
+INSERT INTO usuario values (default, 'admin', 'admin@gmail.com', md5('123'), 'a');
