@@ -8,6 +8,7 @@ import java.sql.*;
 import javax.swing.JOptionPane;
 import telas.FramePrincipal;
 import apoio.ConexaoBD;
+import telas.LoginPage;
 
 /**
  *
@@ -19,7 +20,7 @@ public class ProjetoDeVendas {
 
     public static void main(String[] args) {
         if(ConexaoBD.getInstance().getConnection() != null) {
-            new FramePrincipal().setVisible(true);
+            new LoginPage(null, true).setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null, "Erro ao conectar com o banco de dados!");
         }
