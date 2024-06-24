@@ -7,6 +7,7 @@ package telas;
 import apoio.ComboItem;
 import apoio.CombosDAO;
 import apoio.Formatacao;
+import apoio.IItemPesquisa;
 import apoio.Validacao;
 import dao.PedidoDAO;
 import entidades.Pedido;
@@ -17,7 +18,7 @@ import javax.swing.JOptionPane;
  *
  * @author Elias
  */
-public class IfrPedido extends javax.swing.JInternalFrame {
+public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesquisa {
     int idPedido = 0;
     /**
      * Creates new form IfrPessoa
@@ -70,9 +71,9 @@ public class IfrPedido extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        jTextField7 = new javax.swing.JTextField();
-        jTextField8 = new javax.swing.JTextField();
+        tfdIdProduto = new javax.swing.JTextField();
+        tfdDescricaoProduto = new javax.swing.JTextField();
+        tfdValorProduto = new javax.swing.JTextField();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         buttonEditar = new javax.swing.JButton();
@@ -126,7 +127,7 @@ public class IfrPedido extends javax.swing.JInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel5)
@@ -174,7 +175,12 @@ public class IfrPedido extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Cliente ID:");
 
-        jButton3.setText("Adicionar produto");
+        jButton3.setText("Buscar produto");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -192,6 +198,12 @@ public class IfrPedido extends javax.swing.JInternalFrame {
         jLabel8.setText("Produto:");
 
         jLabel9.setText("Quantidade:");
+
+        tfdIdProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfdIdProdutoActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("Adicionar");
 
@@ -226,23 +238,21 @@ public class IfrPedido extends javax.swing.JInternalFrame {
                         .addComponent(jButton3)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tfdIdProduto, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                            .addComponent(jTextField5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton6))
+                            .addComponent(jButton6)
+                            .addComponent(tfdDescricaoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jTextField8))))
+                            .addComponent(tfdValorProduto))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -269,9 +279,9 @@ public class IfrPedido extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfdIdProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfdDescricaoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfdValorProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
@@ -456,6 +466,22 @@ public class IfrPedido extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_formattedDataInputFocusLost
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        new DlgLocalizar(null, true, this, "produto").setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void tfdIdProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfdIdProdutoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfdIdProdutoActionPerformed
+
+    @Override
+    public void definirValor(String[] valores, String itemPesquisa) {
+        if (itemPesquisa.equalsIgnoreCase("produto")) {
+            tfdIdProduto.setText(valores[0]);
+            tfdDescricaoProduto.setText(valores[1]);
+            tfdValorProduto.setText(valores[2]);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
@@ -484,12 +510,12 @@ public class IfrPedido extends javax.swing.JInternalFrame {
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
     private javax.swing.JTable tblPedido;
+    private javax.swing.JTextField tfdDescricaoProduto;
     private javax.swing.JTextField tfdEnderecoPedido;
+    private javax.swing.JTextField tfdIdProduto;
     private javax.swing.JTextField tfdObsevacaoPedido;
     private javax.swing.JTextField tfdSearch;
+    private javax.swing.JTextField tfdValorProduto;
     // End of variables declaration//GEN-END:variables
 }
