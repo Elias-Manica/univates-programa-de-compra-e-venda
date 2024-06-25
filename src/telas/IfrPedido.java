@@ -14,10 +14,12 @@ import dao.PedidoDAO;
 import entidades.ItemPedido;
 import entidades.Pedido;
 import java.awt.Color;
+import java.awt.Frame;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -76,6 +78,7 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         jLabel5 = new javax.swing.JLabel();
         tfdSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -152,6 +155,13 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
             }
         });
 
+        jButton4.setText("Exibir detalhes");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -163,7 +173,9 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tfdSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSearch)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -174,8 +186,10 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                     .addComponent(jLabel5)
                     .addComponent(tfdSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSearch))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jButton4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -594,6 +608,19 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        try {
+            String idTabela = String.valueOf(tblPedido.getValueAt(tblPedido.getSelectedRow(), 0));
+            int idVenda =  Integer.parseInt(idTabela);
+
+            Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(tblPedido);
+            ModalDetalhesPedidos modal = new ModalDetalhesPedidos(parentFrame, true, idVenda);
+            modal.setVisible(true);
+        } catch(Exception e) {
+         JOptionPane.showMessageDialog(this, "Selecione alguma linha na tabela para ver seus detalhes!");
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     @Override
     public void definirValor(String[] valores, String itemPesquisa) {
         if (itemPesquisa.equalsIgnoreCase("produto")) {
@@ -612,6 +639,7 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
