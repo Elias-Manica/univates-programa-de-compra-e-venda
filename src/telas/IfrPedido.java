@@ -11,10 +11,13 @@ import apoio.IItemPesquisa;
 import apoio.Validacao;
 import dao.ItemPedidoDAO;
 import dao.PedidoDAO;
+import dao.ProdutoDAO;
 import entidades.ItemPedido;
 import entidades.Pedido;
+import entidades.Produto;
 import java.awt.Color;
 import java.awt.Frame;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
@@ -473,21 +476,22 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Erro ao salvar dados do pedido: " + result);
             }
-        } else {
-            if(pedidoDAO.atualizar(pedido) == null) {
-                formattedDataInput.setText("");
-                tfdObsevacaoPedido.setText("");
-                tfdEnderecoPedido.setText("");
-                comboBoxClientes.setSelectedIndex(0);
+        } 
+        //else {
+           // if(pedidoDAO.atualizar(pedido) == null) {
+             //   formattedDataInput.setText("");
+               // tfdObsevacaoPedido.setText("");
+               // tfdEnderecoPedido.setText("");
+                //comboBoxClientes.setSelectedIndex(0);
 
-                JOptionPane.showMessageDialog(this, "Pedido atualizado com sucesso");
+//                JOptionPane.showMessageDialog(this, "Pedido atualizado com sucesso");
 
-                carregarDados();
-                formattedDataInput.requestFocus();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do pedido");
-            }
-        }
+  //              carregarDados();
+    //            formattedDataInput.requestFocus();
+      //      } else {
+        //        JOptionPane.showMessageDialog(this, "Erro ao salvar dados do pedido");
+          //  }
+        //}
         
         idPedido = 0;
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -527,6 +531,7 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         String idTabela = String.valueOf(tblPedido.getValueAt(tblPedido.getSelectedRow(), 0));
         
         idPedido = Integer.parseInt(idTabela);
+        new ItemPedidoDAO().excluir(idPedido);
         String pedido = new PedidoDAO().excluir(idPedido);
         
         if(pedido == null) {
@@ -561,7 +566,9 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         for (ItemPedido item : itensPedido) {
             total += Double.parseDouble(item.getValor_item());
         }
-        tfdTotal.setText(String.valueOf(total));
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String formattedTotal = decimalFormat.format(total);
+        tfdTotal.setText(formattedTotal);
         tfdIdProduto.setText("");
         tfdQuantidade.setText("");
         tfdDescricaoProduto.setText("");
@@ -580,9 +587,26 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         }
         
         int idProduto = Integer.parseInt(tfdIdProduto.getText());
+        
+        // Verificação se o produto já está na lista de itens do pedido
+        for (ItemPedido item : itensPedido) {
+            if (item.getProduto_id() == idProduto) {
+                JOptionPane.showMessageDialog(this, "Produto já está no pedido.");
+                return;
+            }
+        }
+        
         String descricaoProduto = tfdDescricaoProduto.getText();
         double valorUnitario = Double.parseDouble(tfdValorProduto.getText());
         double quantidade = Double.parseDouble(tfdQuantidade.getText());
+        
+        Produto produto = new ProdutoDAO().consultarId(idProduto);
+        double quantidadeEmEstoque = Double.parseDouble(produto.getQtde_estoque());
+        if (quantidade > quantidadeEmEstoque) {
+            JOptionPane.showMessageDialog(this, "Quantidade em estoque insuficiente. Quantidade disponível: " + quantidadeEmEstoque);
+            return;
+        }
+    
         double precoTotal = valorUnitario * quantidade;
 
         ItemPedido item = new ItemPedido();

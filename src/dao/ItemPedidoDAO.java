@@ -49,7 +49,20 @@ public class ItemPedidoDAO implements IDAOT<ItemPedido> {
 
     @Override
     public String excluir(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            
+            String sql = "delete from item_pedido where pedido_id='" + id + "';";
+            
+            System.err.println("Sql: " + sql);
+            
+            int retorno = st.executeUpdate(sql);
+            
+            return null;
+        } catch (Exception e) {
+            System.out.println("Erro ao excluir o item do pedido: " + e);
+            return e.toString();
+        }
     }
 
     @Override
