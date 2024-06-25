@@ -9,10 +9,16 @@ import apoio.CombosDAO;
 import apoio.Formatacao;
 import apoio.IItemPesquisa;
 import apoio.Validacao;
+import dao.ItemPedidoDAO;
 import dao.PedidoDAO;
+import entidades.ItemPedido;
 import entidades.Pedido;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,6 +26,9 @@ import javax.swing.JOptionPane;
  */
 public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesquisa {
     int idPedido = 0;
+    private DefaultTableModel model;
+    private List<ItemPedido> itensPedido = new ArrayList<>();
+    
     /**
      * Creates new form IfrPessoa
      */
@@ -27,13 +36,24 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         initComponents();
         
         Formatacao.formatarData(formattedDataInput);
+        tfdIdProduto.setEditable(false);
+        tfdDescricaoProduto.setEditable(false);
+        tfdValorProduto.setEditable(false);
+        tfdTotal.setEditable(false);
         
         new CombosDAO().popularCombo("cliente", comboBoxClientes);
         carregarDados();
+        
+        inicializarTabela();
     }
     
     private void carregarDados() {
         new PedidoDAO().popularTabela(tblPedido, "");
+    }
+    
+    private void inicializarTabela() {
+        model = new DefaultTableModel(new Object[]{"Id", "Produto", "Quantidade", "Preço"}, 0);
+        tabelaProdutos.setModel(model);
     }
 
     /**
@@ -47,6 +67,7 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
 
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        buttonEditar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -67,16 +88,17 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         jLabel3 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        tabelaProdutos = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        tfdQuantidade = new javax.swing.JTextField();
         tfdIdProduto = new javax.swing.JTextField();
         tfdDescricaoProduto = new javax.swing.JTextField();
         tfdValorProduto = new javax.swing.JTextField();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
-        buttonEditar = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        tfdTotal = new javax.swing.JTextField();
         buttonExcluir = new javax.swing.JButton();
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -91,6 +113,13 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
             }
         ));
         jScrollPane3.setViewportView(jTable2);
+
+        buttonEditar.setText("Editar");
+        buttonEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonEditarActionPerformed(evt);
+            }
+        });
 
         setTitle("Cadastro de Pedidos");
 
@@ -146,7 +175,7 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                     .addComponent(tfdSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSearch))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -182,7 +211,7 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
             }
         });
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaProdutos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -190,10 +219,10 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Produto", "Quantidade", "Preço"
             }
         ));
-        jScrollPane4.setViewportView(jTable3);
+        jScrollPane4.setViewportView(tabelaProdutos);
 
         jLabel8.setText("Produto:");
 
@@ -206,8 +235,20 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         });
 
         jButton6.setText("Adicionar");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton7.setText("Remover");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Total:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -235,16 +276,13 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                             .addComponent(tfdObsevacaoPedido)))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tfdIdProduto, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
-                            .addComponent(jTextField5))
+                            .addComponent(tfdQuantidade))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jButton6)
@@ -252,7 +290,15 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tfdValorProduto))))
+                            .addComponent(tfdValorProduto)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton3)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfdTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -285,24 +331,21 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfdQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton6)
                     .addComponent(jButton7))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(tfdTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Adicionar Pedido", jPanel2);
-
-        buttonEditar.setText("Editar");
-        buttonEditar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonEditarActionPerformed(evt);
-            }
-        });
 
         buttonExcluir.setText("Excluir");
         buttonExcluir.addActionListener(new java.awt.event.ActionListener() {
@@ -319,8 +362,6 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(buttonExcluir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buttonEditar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
             .addComponent(jTabbedPane1)
@@ -332,7 +373,6 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(buttonEditar)
                     .addComponent(buttonExcluir))
                 .addContainerGap())
         );
@@ -367,9 +407,22 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
             return;
         }
         
+         // Convert the date to the correct format
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate;
+        try {
+            java.util.Date date = inputFormat.parse(valueData);
+            formattedDate = outputFormat.format(date);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Formato de data inválido. Use dd/MM/yyyy.");
+            formattedDataInput.requestFocus();
+            return;
+        }
+        
         Pedido pedido = new Pedido();
         pedido.setId(idPedido);
-        pedido.setData(valueData);
+        pedido.setData(formattedDate);
         pedido.setEndereco_entrega(valueEnderecoEntrega);
         pedido.setObservacao(valueObservacao);
         ComboItem ci = (ComboItem) comboBoxClientes.getSelectedItem();
@@ -377,19 +430,34 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         
         PedidoDAO pedidoDAO = new PedidoDAO();
         
-        if(idPedido == 0) {
-            if(pedidoDAO.salvar(pedido) == null) {
+        if (idPedido == 0) {
+            String result = pedidoDAO.salvar(pedido);
+            try {
+                int idPedidoGerado = Integer.parseInt(result);
+                pedido.setId(idPedidoGerado);
                 formattedDataInput.setText("");
                 tfdEnderecoPedido.setText("");
                 tfdObsevacaoPedido.setText("");
                 comboBoxClientes.setSelectedIndex(0);
 
+                // Salvando os itens do pedido
+                ItemPedidoDAO itemPedidoDAO = new ItemPedidoDAO();
+                for (ItemPedido item : itensPedido) {
+                    item.setPedido_id(pedido.getId());
+                    itemPedidoDAO.salvar(item);
+                }
+
                 JOptionPane.showMessageDialog(this, "Pedido adicionado com sucesso");
 
                 carregarDados();
                 formattedDataInput.requestFocus();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do pedido");
+                atualizarTotal();
+                
+                model.setRowCount(0);
+                itensPedido.clear();
+                tfdTotal.setText("");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar dados do pedido: " + result);
             }
         } else {
             if(pedidoDAO.atualizar(pedido) == null) {
@@ -474,6 +542,58 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
         // TODO add your handling code here:
     }//GEN-LAST:event_tfdIdProdutoActionPerformed
 
+    private void atualizarTotal() {
+        double total = 0;
+        for (ItemPedido item : itensPedido) {
+            total += Double.parseDouble(item.getValor_item());
+        }
+        tfdTotal.setText(String.valueOf(total));
+        tfdIdProduto.setText("");
+        tfdQuantidade.setText("");
+        tfdDescricaoProduto.setText("");
+        tfdValorProduto.setText("");
+    }
+    
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        if(tfdIdProduto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Escolha algum produto.");
+            return;
+        }
+        
+        if(tfdQuantidade.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Adicione uma quantidade ao produto.");
+            return;
+        }
+        
+        int idProduto = Integer.parseInt(tfdIdProduto.getText());
+        String descricaoProduto = tfdDescricaoProduto.getText();
+        double valorUnitario = Double.parseDouble(tfdValorProduto.getText());
+        double quantidade = Double.parseDouble(tfdQuantidade.getText());
+        double precoTotal = valorUnitario * quantidade;
+
+        ItemPedido item = new ItemPedido();
+        item.setProduto_id(idProduto);
+        item.setQtde(quantidade);
+        item.setValor_item(String.valueOf(precoTotal));
+
+        itensPedido.add(item);
+
+        model.addRow(new Object[]{idProduto, descricaoProduto, quantidade, precoTotal});
+        
+        atualizarTotal();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        int selectedRow = tabelaProdutos.getSelectedRow();
+        if (selectedRow >= 0) {
+            itensPedido.remove(selectedRow);
+            model.removeRow(selectedRow);
+            atualizarTotal();
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um produto para remover.");
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
     @Override
     public void definirValor(String[] valores, String itemPesquisa) {
         if (itemPesquisa.equalsIgnoreCase("produto")) {
@@ -497,6 +617,7 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
@@ -508,14 +629,15 @@ public class IfrPedido extends javax.swing.JInternalFrame implements IItemPesqui
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTable tabelaProdutos;
     private javax.swing.JTable tblPedido;
     private javax.swing.JTextField tfdDescricaoProduto;
     private javax.swing.JTextField tfdEnderecoPedido;
     private javax.swing.JTextField tfdIdProduto;
     private javax.swing.JTextField tfdObsevacaoPedido;
+    private javax.swing.JTextField tfdQuantidade;
     private javax.swing.JTextField tfdSearch;
+    private javax.swing.JTextField tfdTotal;
     private javax.swing.JTextField tfdValorProduto;
     // End of variables declaration//GEN-END:variables
 }

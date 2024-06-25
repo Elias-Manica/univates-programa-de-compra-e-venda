@@ -1,11 +1,15 @@
 package dao;
 
 import apoio.ConexaoBD;
+import apoio.Formatacao;
 import apoio.IDAOT;
 import entidades.Pedido;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.sql.Date;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -19,20 +23,29 @@ public class PedidoDAO implements IDAOT<Pedido> {
     @Override
     public String salvar(Pedido o) {
         try {
-            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
+            String sql = "INSERT INTO pedido (data, endereco_entrega, observacao, cliente_id) " +
+                         "VALUES (?, ?, ?, ?) RETURNING id;";
             
-            String sql = "insert into pedido " +
-                         "values (default, " +
-                         "'" + o.getData() + "', " +
-                         "'" + o.getEndereco_entrega()+ "', " +
-                         "'" + o.getObservacao() + "', " +
-                         "'" + o.getClient_id()+ "');";
+            PreparedStatement pst = ConexaoBD.getInstance().getConnection().prepareStatement(sql);
             
-            System.err.println("Sql: " + sql);
+            String data = o.getData();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+            java.util.Date parsed = format.parse(data);
+            Date sqlDate = new Date(parsed.getTime());
             
-            int retorno = st.executeUpdate(sql);
+            pst.setDate(1, sqlDate);
+            pst.setString(2, o.getEndereco_entrega());
+            pst.setString(3, o.getObservacao());
+            pst.setInt(4, o.getClient_id());
+
+            ResultSet rs = pst.executeQuery();
             
-            return null;
+            if (rs.next()) {
+                return String.valueOf(rs.getInt(1)); // Retorna o ID gerado como String
+            } else {
+                return "Erro ao obter ID do pedido";
+            }
         } catch (Exception e) {
             System.out.println("Erro ao inserir o pedido: " + e);
             return e.toString();
