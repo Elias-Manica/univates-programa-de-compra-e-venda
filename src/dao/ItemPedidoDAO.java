@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,48 +25,104 @@ import javax.swing.table.DefaultTableModel;
 public class ItemPedidoDAO implements IDAOT<ItemPedido> {
 
     @Override
-     public String salvar(ItemPedido o) {
+    public String salvar(ItemPedido o) {
         try {
-            String sql = "INSERT INTO item_pedido (produto_id, pedido_id, qtde, valor_item) " +
-                         "VALUES (?, ?, ?, ?);";
-            
-            PreparedStatement pst = ConexaoBD.getInstance().getConnection().prepareStatement(sql);
-            pst.setInt(1, o.getProduto_id());
-            pst.setInt(2, o.getPedido_id());
-            pst.setDouble(3, o.getQtde());
-            pst.setDouble(4, Double.parseDouble(o.getValor_item()));
+            Connection conn = ConexaoBD.getInstance().getConnection();
+            conn.setAutoCommit(false);
 
-            int retorno = pst.executeUpdate();
-            
-            return null; // Retorna null em caso de sucesso
+            try {
+                // Inserir o item do pedido
+                String sqlItemPedido = "INSERT INTO item_pedido (produto_id, pedido_id, qtde, valor_item) " +
+                                       "VALUES (?, ?, ?, ?);";
+
+                PreparedStatement pstItemPedido = conn.prepareStatement(sqlItemPedido);
+                pstItemPedido.setInt(1, o.getProduto_id());
+                pstItemPedido.setInt(2, o.getPedido_id());
+                pstItemPedido.setDouble(3, o.getQtde());
+                pstItemPedido.setDouble(4, Double.parseDouble(o.getValor_item()));
+                pstItemPedido.executeUpdate();
+
+                // Atualizar a quantidade no estoque
+                String sqlUpdateEstoque = "UPDATE produto SET qtde_estoque = CAST(qtde_estoque AS double precision) - ? WHERE id = ?";
+                PreparedStatement pstUpdateEstoque = conn.prepareStatement(sqlUpdateEstoque);
+                pstUpdateEstoque.setDouble(1, o.getQtde());
+                pstUpdateEstoque.setInt(2, o.getProduto_id());
+                pstUpdateEstoque.executeUpdate();
+
+                conn.commit();
+                return null; // Retorna null em caso de sucesso
+            } catch (Exception e) {
+                conn.rollback();
+                System.out.println("Erro ao inserir o item do pedido e atualizar o estoque: " + e);
+                return e.toString();
+            } finally {
+                conn.setAutoCommit(true);
+            }
         } catch (Exception e) {
             System.out.println("Erro ao inserir o item do pedido: " + e);
             return e.toString();
         }
     }
 
+
     @Override
     public String atualizar(ItemPedido o) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
+   @Override
     public String excluir(int id) {
+        Connection conn = ConexaoBD.getInstance().getConnection();
         try {
-            Statement st = ConexaoBD.getInstance().getConnection().createStatement();
-            
-            String sql = "delete from item_pedido where pedido_id='" + id + "';";
-            
-            System.err.println("Sql: " + sql);
-            
-            int retorno = st.executeUpdate(sql);
-            
-            return null;
+            conn.setAutoCommit(false);
+
+            // Recuperar as quantidades dos itens a serem excluídos
+            String sqlSelect = "SELECT produto_id, qtde FROM item_pedido WHERE pedido_id = ?";
+            PreparedStatement pstSelect = conn.prepareStatement(sqlSelect);
+            pstSelect.setInt(1, id);
+            ResultSet rs = pstSelect.executeQuery();
+
+            Map<Integer, Double> itemsToUpdate = new HashMap<>();
+            while (rs.next()) {
+                int produtoId = rs.getInt("produto_id");
+                double quantidade = rs.getDouble("qtde");
+                itemsToUpdate.put(produtoId, quantidade);
+            }
+
+            // Excluir os itens do pedido
+            String sqlDelete = "DELETE FROM item_pedido WHERE pedido_id = ?";
+            PreparedStatement pstDelete = conn.prepareStatement(sqlDelete);
+            pstDelete.setInt(1, id);
+            pstDelete.executeUpdate();
+
+            // Atualizar as quantidades no estoque (com conversão explícita)
+            String sqlUpdateEstoque = "UPDATE produto SET qtde_estoque = CAST(qtde_estoque AS double precision) + ? WHERE id = ?";
+            PreparedStatement pstUpdateEstoque = conn.prepareStatement(sqlUpdateEstoque);
+            for (Map.Entry<Integer, Double> entry : itemsToUpdate.entrySet()) {
+                pstUpdateEstoque.setDouble(1, entry.getValue());
+                pstUpdateEstoque.setInt(2, entry.getKey());
+                pstUpdateEstoque.executeUpdate();
+            }
+
+            conn.commit();
+            return null; // Retorna null em caso de sucesso
         } catch (Exception e) {
-            System.out.println("Erro ao excluir o item do pedido: " + e);
+            try {
+                conn.rollback();
+            } catch (SQLException se) {
+                System.out.println("Erro ao reverter a transação: " + se);
+            }
+            System.out.println("Erro ao excluir o item do pedido e atualizar o estoque: " + e);
             return e.toString();
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException se) {
+                System.out.println("Erro ao redefinir o auto-commit: " + se);
+            }
         }
     }
+
 
     @Override
     public ArrayList<ItemPedido> consultarTodos() {
