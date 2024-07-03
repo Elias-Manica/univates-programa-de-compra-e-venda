@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 6.20.6  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rel_pedidos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="97594368-30d8-436a-a826-5399dd484bc6">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Projeto de venda integrador"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="dataIni" class="java.lang.String"/>
+	<parameter name="dataFim" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+    p.id AS pedido_id,
+    p.data,
+    p.endereco_entrega,
+    p.observacao,
+    p.cliente_id,
+    SUM(ip.valor_item) AS valor_total_pedido
+FROM 
+    public.pedido p
+JOIN 
+    public.item_pedido ip ON p.id = ip.pedido_id
+WHERE 
+    p.data BETWEEN TO_DATE('$P!{dataIni}', 'DD/MM/YYYY') AND TO_DATE('$P!{dataFim}', 'DD/MM/YYYY')
+GROUP BY 
+    p.id, p.data, p.endereco_entrega, p.observacao, p.cliente_id
+ORDER BY 
+    p.id
+]]>
+	</queryString>
+	<field name="pedido_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="pedido_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="pedido_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedido"/>
+	</field>
+	<field name="data" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="data"/>
+		<property name="com.jaspersoft.studio.field.label" value="data"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedido"/>
+	</field>
+	<field name="endereco_entrega" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="endereco_entrega"/>
+		<property name="com.jaspersoft.studio.field.label" value="endereco_entrega"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedido"/>
+	</field>
+	<field name="observacao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="observacao"/>
+		<property name="com.jaspersoft.studio.field.label" value="observacao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedido"/>
+	</field>
+	<field name="cliente_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="cliente_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="cliente_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pedido"/>
+	</field>
+	<field name="valor_total_pedido" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="valor_total_pedido"/>
+		<property name="com.jaspersoft.studio.field.label" value="valor_total_pedido"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="180" y="24" width="210" height="30" uuid="18424992-7f57-47a9-a758-e6b1d46b9275"/>
+				<textElement textAlignment="Center">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Listagem de pedidos]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="96" splitType="Stretch">
+			<staticText>
+				<reportElement x="24" y="11" width="100" height="30" uuid="022cd3ce-c755-478d-b74c-c6b48508662f"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data início:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="24" y="50" width="100" height="30" uuid="4c16ae8e-b6cb-40e2-a586-646e12ab9e64"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data Final:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="120" y="10" width="100" height="30" uuid="323fef7b-98f7-4de9-adf2-8d5990c7c19d"/>
+				<textFieldExpression><![CDATA[$P{dataIni}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="50" width="100" height="30" uuid="fa30fd3f-e93a-4f14-80ac-6c6ac7e399e3"/>
+				<textFieldExpression><![CDATA[$P{dataFim}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="-20" y="0" width="100" height="30" uuid="fe952b2e-aa93-4b1d-9ec4-a09ee91dcdc8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2e3757da-c746-4dc8-9c13-ca5854e619dd"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[pedido_id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="100" height="30" uuid="05cb8b4d-df13-4ba3-a306-322531bfd1c4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bb9c0edc-f369-4b19-bb48-8de08698a4ab"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="100" height="30" uuid="2a6f2c39-4829-4f1f-ba45-5f586d2f2903">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b1c8b750-69cd-4d8d-9b8c-296911ec8146"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[endereco_entrega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="100" height="30" uuid="6fda9a3f-95da-481e-a280-d2a9e767c952">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4e539c25-b923-4f70-ba0c-08cb36b881af"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[observacao]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="374" y="0" width="100" height="30" uuid="75135f9f-1010-474f-bcd3-c8bc731d3a9b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14638463-c1cd-4862-aa0e-319d312b02bd"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[cliente_id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="474" y="0" width="100" height="30" uuid="1cf9b0bb-bc11-4dfa-83a5-1d35494a8f95">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f62c3997-be74-47c2-9364-d579a9aac102"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[valor_total_pedido]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="-20" y="46" width="100" height="30" uuid="e74f242f-2596-44f4-9ea4-3c27b0f2513b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2e3757da-c746-4dc8-9c13-ca5854e619dd"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{pedido_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="46" width="100" height="30" uuid="e7519123-27db-4340-8b93-78748e88c695">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bb9c0edc-f369-4b19-bb48-8de08698a4ab"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="46" width="100" height="30" uuid="683d578c-7416-4c95-94e5-58c206fde375">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b1c8b750-69cd-4d8d-9b8c-296911ec8146"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{endereco_entrega}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="47" width="100" height="30" uuid="2cb7ac15-e90f-4969-986e-16fde5ae27b2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4e539c25-b923-4f70-ba0c-08cb36b881af"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{observacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="47" width="100" height="30" uuid="32b2e725-5585-429e-81e9-9a3b053564ba">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="14638463-c1cd-4862-aa0e-319d312b02bd"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{cliente_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="47" width="100" height="30" uuid="c15eeaa1-4fa1-470e-b5cb-8a280fbaba74">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f62c3997-be74-47c2-9364-d579a9aac102"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{valor_total_pedido}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
